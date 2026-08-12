@@ -87,6 +87,9 @@ TwoViewGeometry CreatePlanarTwoViewGeometry() {
 }
 
 void RunGpuTest(std::function<void()> test_body) {
+#if !defined(COLMAP_GPU_ENABLED)
+  GTEST_SKIP() << "Requires OpenGL, CUDA or HIP support";
+#else
   char app_name[] = "Test";
   int argc = 1;
   char* argv[] = {app_name};
@@ -107,6 +110,7 @@ void RunGpuTest(std::function<void()> test_body) {
   TestThread thread;
   thread.body = std::move(test_body);
   RunThreadWithOpenGLContext(&thread);
+#endif
 }
 
 struct SiftCpuExtractionParams {
